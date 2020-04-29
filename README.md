@@ -1,6 +1,11 @@
 # Generic Splay Tree
 Implementation of a Generic Splay Tree in C++.
 
+###### What's a Splay Tree?
+A splay tree is a self-balancing binary search tree with the additional property that recently accessed elements are quick to access again. It performs basic operations such as insertion, look-up and removal in O(log n) amortized time.
+
+To see how splay trees work, check out this [Splay Trees Visualization.](https://www.cs.usfca.edu/~galles/visualization/SplayTree.html)
+
 ### Member Functions
 
 |Iterators | |
