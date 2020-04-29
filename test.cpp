@@ -7,11 +7,10 @@ int main()
 {
     #if 0       //testcase 1
     splay<int> s;
+    splay<int> s2;
 
     /**
-     * The value class of splay has to support the following:
-     * - Default Constructor for default value
-     * - Comparision operation (e.g. <, = , >)
+     * The value class of splay has to support comparision operations (e.g. <, = , >)
      */
     
     s.insert(5);

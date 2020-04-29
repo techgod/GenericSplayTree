@@ -399,6 +399,12 @@ class splay
     {
         delete_node(data);
     }
+    
+    bool operator==(const splay<dt>& rhs)
+    {
+        return identical_helper(root_,rhs.root_);
+    }
+
 
     private:
 
@@ -434,6 +440,22 @@ class splay
             return preorder_helper(root->right_);
         }
     }
+
+    bool identical_helper(node* root_a, node* root_b){
+		if((root_a==nullptr)&&(root_b==nullptr))
+        {
+			return true;
+		}
+        else if((root_a!=nullptr && root_b==nullptr)||(root_a==nullptr && root_b!=nullptr)){
+			return false;
+		}
+        else if(root_a->data_==root_a->data_){
+			return identical_helper(root_a->left_, root_b->left_) && identical_helper(root_a->right_, root_b->right_);
+		}
+        else{
+			return false;
+		}
+	}
 
     /**
      * Insert Node into Splay Tree
