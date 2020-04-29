@@ -1,8 +1,6 @@
 /**
  * Generic Splay Trees
- * 
  * A lightweight generic implementation of Splay Trees.
- * 
  */
 
 template<typename ndt>
@@ -26,11 +24,21 @@ class splay
 {
     public:
 
-    enum traversal{inorder,preorder,postorder};
+    enum traversal{inorder,preorder,postorder,rinorder};
     typedef Node<dt> node;
 
+    //default constructor
     explicit splay() : size_(0),root_(nullptr),it_type_(inorder) {}
 
+    //copy constructor
+    splay(const splay &sp)
+    {
+        size_ = sp.size_;
+        it_type_ = sp.it_type_;
+        root_ = clone_helper(sp.root_, nullptr);
+    }
+
+    //destructor
     ~splay()
 	{
 		destroy_splay_tree(root_);
@@ -67,18 +75,12 @@ class splay
             {
                 set_postorder_successor(); //Sets value of it_node_ to preorder successor
             }
+            else if(it_outer_.it_type_ == rinorder)
+            {
+                set_inorder_predecessor(); //Sets value of it_node_ to preorder successor
+            }
             return *this;
         }
-
-        Iterator& operator--() //pre increment
-        {
-            if(it_outer_.it_type_ == inorder)
-            {
-                set_inorder_predecessor();
-            }
-        }
-
-
 
         Iterator operator++(int) //post increment
         {
@@ -130,12 +132,21 @@ class splay
             }
         }
 
-
+        /**
+         * Setting it_node_ as the inorder predecessor
+         * 
+         * If the current node has a lst,
+         * - max value of lst is predecessor
+         * 
+         * Else if the current node has no lst,
+         * - move up the tree till you find a node which is the right child of node
+         */
         void set_inorder_predecessor()
         {
-            int flag = 1;
             if(it_node_->left_)
             {
+                //there is a lst
+                //predecessor is max value (right most value) in lst
                 it_node_ = it_node_->left_;
                 while(it_node_->right_)
                 {
@@ -144,28 +155,29 @@ class splay
             }
             else
             {
-                if(it_node_->parent_)
+                bool found = false;
+
+                //while you don't reach the root node, keep traversing up
+                while(it_node_->parent_)
                 {
-                    while(it_node_->parent_)
+                    if(it_node_->parent_->right_ == it_node_) //if node turns out to be right child, then root is predecessor
                     {
-                        if(it_node_->parent_->right_ == it_node_)
-                        {
-                            it_node_ = it_node_->parent_;
-                            flag = 0;
-                            break;
-                            // return *this;
-                        }
-                        else
-                            it_node_ = it_node_->parent_;
-                    }               
-                }   
-                if(flag)
+                        it_node_ = it_node_->parent_;
+                        found = true;
+                        break;
+                    }
+                    else
+                    {
+                        it_node_ = it_node_->parent_;
+                    }
+                }                  
+                if(!found)
+                {
                     it_node_ = nullptr;
-                        
+                }
             }
-            // return *this;
-        
         }
+
          /**
          * Setting it_node_ as the preorder successor
          * 
@@ -295,26 +307,27 @@ class splay
 
     Iterator rbegin_in()
     {
-        it_type_ = inorder;        
+        //reverse inorder
+        it_type_ = rinorder;        
         if(root_ == nullptr)
         {
             return Iterator(*this,nullptr);
         }
         node *temp = root_;
+
+        //find rightmost root
         while(temp->right_ != nullptr)
         {
             temp = temp->right_;
         }
 
         return Iterator(*this,temp);
-
     }
 
     Iterator begin_in()
     {
         //Inorder
         //Begins with the left most leaf node
-
         it_type_ = inorder;
 
         if(root_ == nullptr)
@@ -399,7 +412,19 @@ class splay
     {
         delete_node(data);
     }
+
+    void clear()
+    {
+        destroy_splay_tree(root_);
+        root_ = nullptr;
+        size_ = 0;
+    }
     
+    /**
+     * Comparision of two splay trees
+     * Two splay trees are said to be the same if the position of every node is exactly 
+     * identical in both the trees.
+     */
     bool operator==(const splay<dt>& rhs)
     {
         return identical_helper(root_,rhs.root_);
@@ -457,6 +482,19 @@ class splay
 		}
 	}
 
+    node* clone_helper(node* root,node* parent)
+    {
+        if(root == nullptr)
+        {
+           return nullptr;
+        }
+        node* temp = new node(root->data_);
+        temp->parent_ = parent;
+        temp->left_ = clone_helper(root->left_,temp);
+        temp->right_ = clone_helper(root->right_,temp);	
+        return temp;
+    }
+
     /**
      * Insert Node into Splay Tree
      *
@@ -512,6 +550,16 @@ class splay
         splayify(root_,n);
     }
 
+
+    /**
+     * Recursively Destroy entire splay tree
+     *
+     * Inserts node based on value (follows BST property).
+     * Once inserted, element is splayed to the top.
+     *  
+     * @param root : root of tree to be destroyed
+     * @return : nothing (void)
+     */
     void destroy_splay_tree(node *root)
     {
         if(root == nullptr)

@@ -7,8 +7,12 @@ Implementation of a Generic Splay Tree in C++.
 |-----|-----|
 | begin | Return iterator to beginning (default traversal is inorder) |
 | end | Return iterator to end (default traversal is inorder) |
+| rbegin | Return reverse iterator to reverse beginning (default traversal is inorder) |
+| rend | Return reverse iterator to reverse end  (default traversal is inorder) |
 | begin_in | Return iterator to beginning (inorder traversal) |
 | end_in | Return iterator to end (inorder traversal) |
+| rbegin_in |  Return reverse iterator to reverse beginning (inorder traversal) |
+| rend_in | Return reverse iterator to reverse end (inorder traversal) |
 | begin_pre | Return iterator to beginning (default inorder traversal) |
 | end_pre | Return iterator to end (default inorder traversal) |
 | begin_post | Return iterator to beginning (default inorder traversal) |
@@ -39,4 +43,4 @@ Implementation of a Generic Splay Tree in C++.
 
 ### Usage
 - Usage is similar and in line with other STL containers.
-- See ```test.cpp``` for examples on how to use the ```splay``` class.    
+- See ```examples.cpp``` for examples on how to use the ```splay``` class.    
