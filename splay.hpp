@@ -69,6 +69,17 @@ class splay
             }
             return *this;
         }
+
+        Iterator& operator--() //pre increment
+        {
+            if(it_outer_.it_type_ == inorder)
+            {
+                set_inorder_predecessor();
+            }
+        }
+
+
+
         Iterator operator++(int) //post increment
         {
             Iterator temp(it_outer_,*this); //Using default copy constructor
@@ -119,6 +130,42 @@ class splay
             }
         }
 
+
+        void set_inorder_predecessor()
+        {
+            int flag = 1;
+            if(it_node_->left_)
+            {
+                it_node_ = it_node_->left_;
+                while(it_node_->right_)
+                {
+                    it_node_ = it_node_->right_;
+                }
+            }
+            else
+            {
+                if(it_node_->parent_)
+                {
+                    while(it_node_->parent_)
+                    {
+                        if(it_node_->parent_->right_ == it_node_)
+                        {
+                            it_node_ = it_node_->parent_;
+                            flag = 0;
+                            break;
+                            // return *this;
+                        }
+                        else
+                            it_node_ = it_node_->parent_;
+                    }               
+                }   
+                if(flag)
+                    it_node_ = nullptr;
+                        
+            }
+            // return *this;
+        
+        }
          /**
          * Setting it_node_ as the preorder successor
          * 
@@ -237,6 +284,31 @@ class splay
     {
         return end_in();
     }
+    Iterator rbegin()
+    {
+        return rbegin_in();
+    }
+    Iterator rend()
+    {
+        return rend_in();
+    }
+
+    Iterator rbegin_in()
+    {
+        it_type_ = inorder;        
+        if(root_ == nullptr)
+        {
+            return Iterator(*this,nullptr);
+        }
+        node *temp = root_;
+        while(temp->right_ != nullptr)
+        {
+            temp = temp->right_;
+        }
+
+        return Iterator(*this,temp);
+
+    }
 
     Iterator begin_in()
     {
@@ -284,6 +356,10 @@ class splay
     }
 
     Iterator end_in()
+    {
+        return Iterator(*this,nullptr);
+    }
+    Iterator rend_in()
     {
         return Iterator(*this,nullptr);
     }

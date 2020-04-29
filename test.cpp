@@ -5,6 +5,7 @@ using namespace std;
 
 int main()
 {
+    #if 0       //testcase 1
     splay<int> s;
 
     /**
@@ -17,7 +18,27 @@ int main()
     s.insert(7);
     s.insert(4);
     s.insert(6);
+    #endif
+    #if 0           //testcase 2
+    splay<int> s;
 
+    s.insert(10);
+    s.insert(30);
+    s.insert(22);
+    s.insert(18);
+    s.insert(16);
+    s.insert(17);
+    #endif
+    #if 1       //testcase 3
+    splay<int> s;
+
+    // s.insert(10);
+    s.insert(10);
+    s.insert(16);
+    s.insert(5);
+    s.insert(15);
+    s.insert(18);
+    #endif
 
     //Default (Inorder) Traversal
     cout<<"Inorder traversal: ";
@@ -27,6 +48,12 @@ int main()
     }
     cout<<"\n";
 
+    cout<<"Inorder backward traversal: ";
+    for(auto i = s.rbegin(); i!=s.rend(); --i)
+    {
+        cout<<*i<<" ";
+    }
+    cout<<"\n";
     
     //Preorder Traversal
     cout<<"Preorder traversal: ";
