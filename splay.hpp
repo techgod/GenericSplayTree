@@ -9,7 +9,7 @@ template<typename ndt>
 class Node
 {
     public:
-    Node() : data_(ndt()),left_(nullptr),right_(nullptr),parent_(nullptr){}
+    Node(const ndt& data) : data_(data),left_(nullptr),right_(nullptr),parent_(nullptr){}
 
     template<typename dt>
     friend class splay;
@@ -39,7 +39,9 @@ class splay
     class Iterator
     {
         public:
-        explicit Iterator(splay<dt> &outer, node* it_node = nullptr) : it_outer_(outer), it_node_(it_node){} //Iterator Constructor
+
+        //Iterator Constructor
+        explicit Iterator(splay<dt> &outer, node* it_node = nullptr) : it_outer_(outer), it_node_(it_node){}
         
         //Iterator Class Public Methods
 
@@ -77,6 +79,7 @@ class splay
         {
             return it_node_->data_;
         }
+
         private:
         node* it_node_; //The current node in the iterator. LHS value
         splay<dt> &it_outer_;
@@ -169,7 +172,7 @@ class splay
          * For the current node,
          * - if it is the root, then there is no postorder successor (root should be last)
          * - if given node is right child, or right child of parent is null, then parent is successor
-         * - if given node is left child of parent, then right child is rst
+         * - if given node is left child of parent and right child exists. then find sucessor in right sub tree
          * 
          */
         void set_postorder_successor()
@@ -189,6 +192,7 @@ class splay
                 it_node_ = find_post_successor_in_rst(it_node_->parent_->right_);
             }
         }
+
 
         node* find_post_successor_in_rst(node* rst_root) {
             if (rst_root == nullptr) 
@@ -220,7 +224,6 @@ class splay
         }
        
         
-
     };
 
     //Splay Class Public Methods
@@ -302,25 +305,35 @@ class splay
         return Iterator(*this,nullptr);
     }
 
-    void insert(dt data)
+
+    void insert(const dt &data)
     {
-        node *temp = new node();
-        temp->data_ = data;
+        node *temp = new node(data);
         insert_node(temp);
     }
 
-    Iterator find(dt data)
+    Iterator find(const dt &data)
     {
         return Iterator(*this,search_node(root_,data));
     }
 
-    void erase(dt data)
+    unsigned int size()
+    {
+        return size_;
+    }
+
+    bool empty() 	
+    {	
+        return (size_ == 0);	
+    }
+
+    void erase(const dt &data) 
     {
         delete_node(data);
     }
 
     private:
-    
+
     // Splay Class Variables
     node *root_; //Root element of the splay tree
     unsigned int size_; //Size of the splay tree
@@ -586,34 +599,35 @@ class splay
         }
     }
 
+
      /**
      * Search for a node.
      * 
      * Find node where element is found.
      * 
      * @param root : The root of the tree/subtree being searched.
-     * @param key : The value of the element being searched for
+     * @param data : The value of the element being searched for
      * @return: the node where the element is found
      */
-    node* search_node(node *n, dt &key) 
+    node* search_node(node *n,const dt &data) 
     {
         if(n==nullptr)
         {
             return nullptr;
         }
-        if(key == n->data_) {
+        if(data == n->data_) {
             splayify(root_,n);
             return n;
         }
-        else if(key < n->data_)
+        else if(data < n->data_)
         {
             //Element in lst
-            return search_node(n->left_, key);
+            return search_node(n->left_, data);
         }
-        else if(key > n->data_)
+        else if(data > n->data_)
         {
             //Element in rst
-            return search_node(n->right_, key);
+            return search_node(n->right_, data);
         }
         return nullptr;
     }
@@ -634,7 +648,7 @@ class splay
      * @param data : value of element to be deleted.
      * @return: no return (void)
      */
-    void delete_node(dt &data)
+    void delete_node(const dt &data)
     {
         node* root = search_node(root_,data);
 

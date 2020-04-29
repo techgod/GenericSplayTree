@@ -54,7 +54,7 @@ int main()
     }
     cout<<"\n";
 
-    auto res = s.find(3);
+    auto res = s.find(10);
     if(res!=s.end())
     {
         cout<<"Element found."<<"\n";
@@ -64,8 +64,8 @@ int main()
         cout<<"Element not found! "<<"\n";
     }
     
-    //s.erase(5);
-    //s.erase(3);
+    s.erase(10);
+    s.erase(18);
 
     for(auto i = s.begin(); i!=s.end(); ++i)cout<<*i<<" "; //Print Inorder
 
