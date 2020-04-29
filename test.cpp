@@ -14,12 +14,21 @@ int main()
      */
     
 
+    /*
     s.insert(3);
     s.insert(2);
     s.insert(5);
     s.insert(7);
     s.insert(8);
     s.insert(4);
+    */
+
+    s.insert(10);
+    s.insert(30);
+    s.insert(29);
+    s.insert(18);
+    s.insert(11);
+    s.insert(26);
 
     //Default (Inorder) Traversal
     cout<<"Inorder traversal: ";
@@ -55,8 +64,8 @@ int main()
         cout<<"Element not found! "<<"\n";
     }
     
-    s.erase(5);
-    s.erase(3);
+    //s.erase(5);
+    //s.erase(3);
 
     for(auto i = s.begin(); i!=s.end(); ++i)cout<<*i<<" "; //Print Inorder
 

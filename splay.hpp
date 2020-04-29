@@ -27,8 +27,9 @@ class splay
     public:
 
     enum traversal{inorder,preorder,postorder};
+    typedef Node<dt> node;
 
-    explicit splay() : size_(0) {}
+    explicit splay() : size_(0),root_(nullptr),it_type_(inorder) {}
 
     ~splay()
 	{
@@ -38,7 +39,6 @@ class splay
     class Iterator
     {
         public:
-        typedef Node<dt> node;
         explicit Iterator(splay<dt> &outer, node* it_node = nullptr) : it_outer_(outer), it_node_(it_node){} //Iterator Constructor
         
         //Iterator Class Public Methods
@@ -171,11 +171,6 @@ class splay
          * - if given node is right child, or right child of parent is null, then parent is successor
          * - if given node is left child of parent, then right child is rst
          * 
-         * If there is no left or right child, i.e. is a leaf node, then
-         * - search for nearest ancestor which has value greater than current value, and has a right child.
-         * -- if such an ancestor exists, then its right child is successor,
-         * -- else there is no successor.
-         * 
          */
         void set_postorder_successor()
         {
@@ -190,16 +185,40 @@ class splay
             }    
             else
             {
-                // basically when left child, and parent has rst
-                // get leftmost node of rst
-                node* curr = it_node_->parent_->right_; 
-                while (curr->left_ != nullptr)
-                {
-                    curr = curr->left_; 
-                }
-                it_node_ = curr;
+                //basically current node is left child, and right sub tree exists
+                it_node_ = find_post_successor_in_rst(it_node_->parent_->right_);
             }
         }
+
+        node* find_post_successor_in_rst(node* rst_root) {
+            if (rst_root == nullptr) 
+            {
+                return nullptr;
+            }
+
+            if(rst_root->left_ == nullptr && rst_root->right_ == nullptr)
+            {
+                //leaf node -- no lst or rst
+                return rst_root;
+            }
+
+            //if root node doesn't have a left child
+            if (rst_root->left_ == nullptr)
+            {
+                //no lst or rst
+                return find_post_successor_in_rst(rst_root->right_);
+            }
+            else
+            {
+                while(rst_root->left_ != nullptr)
+                {
+                    //rst has a left child. find leftmost child
+                    rst_root=rst_root->left_;
+                }
+                return rst_root;
+            }
+        }
+       
         
 
     };
@@ -301,8 +320,7 @@ class splay
     }
 
     private:
-    typedef Node<dt> node;
-
+    
     // Splay Class Variables
     node *root_; //Root element of the splay tree
     unsigned int size_; //Size of the splay tree
