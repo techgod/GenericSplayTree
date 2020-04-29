@@ -13,22 +13,11 @@ int main()
      * - Comparision operation (e.g. <, = , >)
      */
     
-
-    /*
-    s.insert(3);
-    s.insert(2);
     s.insert(5);
     s.insert(7);
-    s.insert(8);
     s.insert(4);
-    */
+    s.insert(6);
 
-    s.insert(10);
-    s.insert(30);
-    s.insert(29);
-    s.insert(18);
-    s.insert(11);
-    s.insert(26);
 
     //Default (Inorder) Traversal
     cout<<"Inorder traversal: ";
@@ -38,6 +27,7 @@ int main()
     }
     cout<<"\n";
 
+    
     //Preorder Traversal
     cout<<"Preorder traversal: ";
     for(auto i = s.begin_pre(); i!=s.end_pre(); ++i)
@@ -54,6 +44,7 @@ int main()
     }
     cout<<"\n";
 
+    /*
     auto res = s.find(10);
     if(res!=s.end())
     {
@@ -63,13 +54,18 @@ int main()
     {
         cout<<"Element not found! "<<"\n";
     }
-    
+
+    cout<<"Size of splay tree: "<<s.size()<<"\n";
+
     s.erase(10);
     s.erase(18);
+
+    cout<<"Size of splay tree after deleteing two elements: "<<s.size()<<"\n";
 
     for(auto i = s.begin(); i!=s.end(); ++i)cout<<*i<<" "; //Print Inorder
 
     cout<<"\n";
+    */
 
     return 0;
 }

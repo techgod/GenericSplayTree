@@ -83,6 +83,7 @@ class splay
         private:
         node* it_node_; //The current node in the iterator. LHS value
         splay<dt> &it_outer_;
+
         //Iterator Class Private Methods
 
         /**
@@ -193,36 +194,35 @@ class splay
             }
         }
 
-
-        node* find_post_successor_in_rst(node* rst_root) {
-            if (rst_root == nullptr) 
+        node* find_post_successor_in_rst(node* rst_root) 
             {
-                return nullptr;
-            }
-
-            if(rst_root->left_ == nullptr && rst_root->right_ == nullptr)
-            {
-                //leaf node -- no lst or rst
-                return rst_root;
-            }
-
-            //if root node doesn't have a left child
-            if (rst_root->left_ == nullptr)
-            {
-                //no lst or rst
-                return find_post_successor_in_rst(rst_root->right_);
-            }
-            else
-            {
-                while(rst_root->left_ != nullptr)
+                if (rst_root == nullptr) 
                 {
-                    //rst has a left child. find leftmost child
-                    rst_root=rst_root->left_;
+                    return nullptr;
                 }
-                return rst_root;
-            }
+
+                if(rst_root->left_ == nullptr && rst_root->right_ == nullptr)
+                {
+                    //leaf node -- no lst or rst
+                    return rst_root;
+                }
+
+                //if root node doesn't have a left child
+                if (rst_root->left_ == nullptr)
+                {
+                    //no lst or rst
+                    return find_post_successor_in_rst(rst_root->right_);
+                }
+                else
+                {
+                    while(rst_root->left_ != nullptr)
+                    {
+                        //rst has a left child. find leftmost child
+                        rst_root=rst_root->left_;
+                    }
+                    return rst_root;
+                }
         }
-       
         
     };
 
@@ -271,8 +271,7 @@ class splay
 
     Iterator begin_post()
     {
-        //Inorder
-        //Begins with the left most leaf node
+        //Postorder
 
         it_type_ = postorder;
 
@@ -281,13 +280,7 @@ class splay
             return Iterator(*this,nullptr);
         }
 
-        node *temp = root_;
-        while(temp->left_ != nullptr)
-        {
-            temp = temp->left_;
-        }
-
-        return Iterator(*this,temp);
+        return Iterator(*this,preorder_helper(root_));
     }
 
     Iterator end_in()
@@ -304,7 +297,6 @@ class splay
     {
         return Iterator(*this,nullptr);
     }
-
 
     void insert(const dt &data)
     {
@@ -340,6 +332,32 @@ class splay
     traversal it_type_;
 
     // Splay Class Private Methods
+    /**
+     * Helper method to find start element of preorder traversal
+     *  
+     * @param root : root element
+     * @return : pointer node which is the first element of the preorder traversal
+     */
+    node* preorder_helper(node* root) 
+    {
+        while(root->left_ != nullptr)
+        {
+            //finds leftmost child
+            root=root->left_;
+        }
+
+        // If this is a leaf node, this is the first element in preorder
+        if (root->right_ == nullptr) 
+        {
+            return root;
+        }
+        
+        //There is a right subtree - recursively explore that
+        else
+        {
+            return preorder_helper(root->right_);
+        }
+    }
 
     /**
      * Insert Node into Splay Tree
